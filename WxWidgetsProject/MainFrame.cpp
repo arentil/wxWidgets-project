@@ -9,7 +9,7 @@ END_EVENT_TABLE()
 
 
 
-MainFrame::MainFrame(const wxString & title) : wxFrame(NULL, wxID_ANY, title, wxDefaultPosition, wxSize(600, 400))
+MainFrame::MainFrame(const wxString & title) : wxFrame(NULL, wxID_ANY, title, wxDefaultPosition, wxSize(800, 600))
 {
 	m_mainpanel = new wxPanel(this, -1);
 	m_mainsizer = new wxBoxSizer(wxHORIZONTAL);

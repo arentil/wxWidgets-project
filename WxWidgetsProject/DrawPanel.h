@@ -20,8 +20,11 @@ public:
 	void PanelResize(wxSizeEvent & event);
 
 private:
-	wxPoint m_mouseXY;
 	wxSize m_panelSize;
+
+	wxPoint square;
+	wxPoint dragPoint;
+	wxPoint dragStart;
 
 	DECLARE_EVENT_TABLE()
 };

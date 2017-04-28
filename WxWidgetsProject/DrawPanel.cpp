@@ -15,15 +15,19 @@ DrawPanel::DrawPanel(wxFrame * frameParent, wxPanel * parent, wxWindowID winid, 
 void DrawPanel::MouseMotion(wxMouseEvent & event)
 {
 	wxPoint p = event.GetPosition();
-	m_mouseXY = p;
 	m_frameParent->SetStatusText("Point: " + wxString::Format(wxT("%i"), p.x) + ", " + wxString::Format(wxT("%i"), p.y), 0);
-	event.Skip();
+	if (event.Dragging())
+	{
+		square += p - dragStart;
+		m_frameParent->SetStatusText(wxString::Format(wxT("Drag: %i, %i"), square.x, square.y), 2);
+		paintNow();
+		dragStart = p;
+	}
 }
 
 void DrawPanel::MouseOnLeft(wxMouseEvent & event)
 {
-	paintNow();
-	event.Skip();
+	dragStart = event.GetPosition();
 }
 
 void DrawPanel::PanelResize(wxSizeEvent & event)
@@ -31,7 +35,6 @@ void DrawPanel::PanelResize(wxSizeEvent & event)
 	wxSize s = event.GetSize();
 	m_panelSize = s;
 	m_frameParent->SetStatusText("Size: " + wxString::Format(wxT("%i"), s.x) + ", " + wxString::Format(wxT("%i"), s.y), 1);
-	event.Skip();
 }
 
 void DrawPanel::paintNow()
@@ -42,5 +45,7 @@ void DrawPanel::paintNow()
 
 void DrawPanel::render(wxDC & dc)
 {
-	dc.DrawRectangle(m_mouseXY, wxSize(50, 50));
+	dc.SetBrush(*wxWHITE_BRUSH);
+	dc.Clear();
+	dc.DrawRectangle(square, wxSize(50, 50));
 }

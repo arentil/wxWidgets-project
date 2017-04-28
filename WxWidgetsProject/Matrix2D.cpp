@@ -18,3 +18,18 @@ Matrix2D::Matrix2D(float mat[3][3])
 		}
 	}
 }
+
+Vector2D Matrix2D::operator*(const Vector2D & vec)
+{
+	Vector2D ret;
+	for (int i = 0; i < 3; i++)
+	{
+		float sum = 0;
+		for (int j = 0; j < 3; j++)
+		{
+			sum += (m_mat[i][j] * vec[i]);
+		}
+		ret.set(i, sum);
+	}
+	return ret;
+}

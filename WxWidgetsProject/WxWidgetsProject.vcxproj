@@ -148,6 +148,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="DrawArea.cpp" />
     <ClCompile Include="DrawPanel.cpp" />
     <ClCompile Include="LeftPanel.cpp" />
     <ClCompile Include="MainFrame.cpp" />

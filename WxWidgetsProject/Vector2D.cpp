@@ -2,60 +2,47 @@
 
 Vector2D::Vector2D()
 {
-	m_vector[0] = 0;
-	m_vector[1] = 0;
-	m_vector[2] = 1;
+	m_vec[0] = 0;
+	m_vec[1] = 0;
+	m_vec[2] = 1;
 }
 
 Vector2D::Vector2D(float x, float y)
 {
-	m_vector[0] = x;
-	m_vector[1] = y;
-	m_vector[2] = 1;
+	m_vec[0] = x;
+	m_vec[1] = y;
+	m_vec[2] = 1;
 }
 
-Vector2D::Vector2D(const Vector2D & vector)
+Vector2D::Vector2D(const Vector2D & vec)
 {
-	operator=(vector);
+	operator=(vec);
 }
 
-Vector2D & Vector2D::operator=(const Vector2D & vector)
+Vector2D & Vector2D::operator=(const Vector2D & vec)
 {
-	m_vector[0] = vector.getX();
-	m_vector[1] = vector.getY();
-	m_vector[2] = 1;
+	m_vec[0] = vec[0];
+	m_vec[1] = vec[1];
+	m_vec[2] = vec[2];
 	
 	return *this;
 }
 
-void Vector2D::setX(float x)
+float Vector2D::operator[](const int i) const
 {
-	m_vector[0] = x;
+	if (i >= 3 || i < 0)
+		throw std::out_of_range("Vector2D out of range parameter.");
+
+	return m_vec[i];
 }
 
-void Vector2D::setY(float y)
+void Vector2D::setXY(const float x, const float y)
 {
-	m_vector[1] = y;
+	m_vec[0] = x;
+	m_vec[1] = y;
 }
 
-void Vector2D::setXY(float x, float y)
+void Vector2D::set(const int i, const float val)
 {
-	m_vector[0] = x;
-	m_vector[1] = y;
-}
-
-void Vector2D::getXY(float & x, float & y) const
-{
-	x = m_vector[0];
-	y = m_vector[1];
-}
-
-float Vector2D::getX() const
-{
-	return m_vector[0];
-}
-
-float Vector2D::getY() const
-{
-	return m_vector[1];
+	m_vec[i] = val;
 }
