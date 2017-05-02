@@ -11,4 +11,5 @@ public:
 	DrawPanel * m_drawpanel;
 
 	RightPanel(wxFrame * frameParent, wxPanel * parent, wxWindowID winid, const wxString & sizertext);
+	void initialize(int width, int height, int size);
 };

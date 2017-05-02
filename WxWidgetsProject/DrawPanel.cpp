@@ -3,13 +3,24 @@
 
 BEGIN_EVENT_TABLE(DrawPanel, wxPanel)
 	EVT_MOTION(DrawPanel::MouseMotion)
-	EVT_LEFT_DOWN(DrawPanel::MouseOnLeft)
+	EVT_LEFT_DOWN(DrawPanel::MouseLeftDown)
+	EVT_LEFT_UP(DrawPanel::MouseLeftUp)
 	EVT_SIZE(DrawPanel::PanelResize)
 END_EVENT_TABLE()
 
-DrawPanel::DrawPanel(wxFrame * frameParent, wxPanel * parent, wxWindowID winid, wxPoint point, wxSize size) : wxPanel(parent, winid, point, size)
+DrawPanel::DrawPanel(wxFrame * frameParent, wxPanel * parent, wxWindowID winid, wxPoint point, wxSize sizer)
+	: wxPanel(parent, winid, point, sizer)
 {
+	SetEvtHandlerEnabled(false);
 	m_frameParent = frameParent;
+}
+
+void DrawPanel::initialize(int width, int height, int size)
+{
+	drawArea = new DrawArea(this, width, height, size);
+	colorChange = true;
+	drawArea->paintNow();
+	SetEvtHandlerEnabled(true);
 }
 
 void DrawPanel::MouseMotion(wxMouseEvent & event)
@@ -18,16 +29,29 @@ void DrawPanel::MouseMotion(wxMouseEvent & event)
 	m_frameParent->SetStatusText("Point: " + wxString::Format(wxT("%i"), p.x) + ", " + wxString::Format(wxT("%i"), p.y), 0);
 	if (event.Dragging())
 	{
-		square += p - dragStart;
-		m_frameParent->SetStatusText(wxString::Format(wxT("Drag: %i, %i"), square.x, square.y), 2);
-		paintNow();
+		wxPoint pt = p - dragStart;
+		drawArea->changePos(pt.x, pt.y);
+		drawArea->paintNow();
+		m_frameParent->SetStatusText(wxString::Format(wxT("Drag: %i, %i"), pt.x, pt.y), 2);
 		dragStart = p;
+		colorChange = false;
 	}
 }
 
-void DrawPanel::MouseOnLeft(wxMouseEvent & event)
+void DrawPanel::MouseLeftDown(wxMouseEvent & event)
 {
 	dragStart = event.GetPosition();
+}
+
+void DrawPanel::MouseLeftUp(wxMouseEvent & event)
+{
+	wxPoint p = event.GetPosition();
+	if (colorChange)
+	{
+		drawArea->setColor(drawArea->getSquare(p.x, p.y), Color::red);
+		drawArea->paintNow();
+	}
+	colorChange = true;
 }
 
 void DrawPanel::PanelResize(wxSizeEvent & event)
@@ -35,17 +59,5 @@ void DrawPanel::PanelResize(wxSizeEvent & event)
 	wxSize s = event.GetSize();
 	m_panelSize = s;
 	m_frameParent->SetStatusText("Size: " + wxString::Format(wxT("%i"), s.x) + ", " + wxString::Format(wxT("%i"), s.y), 1);
-}
-
-void DrawPanel::paintNow()
-{
-	wxClientDC dc(this);
-	render(dc);
-}
-
-void DrawPanel::render(wxDC & dc)
-{
-	dc.SetBrush(*wxWHITE_BRUSH);
-	dc.Clear();
-	dc.DrawRectangle(square, wxSize(50, 50));
+	drawArea->paintNow();
 }

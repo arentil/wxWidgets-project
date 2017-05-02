@@ -4,13 +4,13 @@
 Square::Square()
 {
 	m_pos.setXY(0, 0);
-	m_colour = Colour::white;
+	m_color = Color::white;
 }
 
 Square::Square(float x, float y)
 {
 	m_pos.setXY(x, y);
-	m_colour = Colour::white;
+	m_color = Color::white;
 }
 
 Square::Square(Vector2D pos)
@@ -23,9 +23,15 @@ void Square::setPos(Vector2D pos)
 	m_pos = pos;
 }
 
-void Square::setColour(Colour colour)
+void Square::setPos(float x, float y)
 {
-	m_colour = colour;
+	Vector2D pos(x, y);
+	setPos(pos);
+}
+
+void Square::setColor(Color colour)
+{
+	m_color = colour;
 }
 
 Vector2D Square::getPos()
@@ -33,7 +39,7 @@ Vector2D Square::getPos()
 	return m_pos;
 }
 
-Colour Square::getColour()
+Color Square::getColor()
 {
-	return m_colour;
+	return m_color;
 }
