@@ -10,6 +10,8 @@ public:
 
 	DrawPanel(wxFrame * frameParent, wxPanel * parent, wxWindowID winid, wxPoint point, wxSize sizer);
 	void initialize(int width, int height, int size);
+	void setScale(float scale);
+	float getScale();
 
 	void MouseMotion(wxMouseEvent & event);
 	void MouseLeftDown(wxMouseEvent & event);

@@ -23,6 +23,12 @@ public:
 
 
 	RightPanel * rightpanel;
-	
+
 	MainFrame(const wxString & title);
+	void setScale(float scale);
+
+	void onMouseScroll(wxMouseEvent & event);
+
+private:
+	DECLARE_EVENT_TABLE()
 };

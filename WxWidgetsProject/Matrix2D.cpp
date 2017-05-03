@@ -27,7 +27,7 @@ Vector2D Matrix2D::operator*(const Vector2D & vec)
 		float sum = 0;
 		for (int j = 0; j < 3; j++)
 		{
-			sum += (m_mat[i][j] * vec[i]);
+			sum += (m_mat[i][j] * vec[j]);
 		}
 		ret.set(i, sum);
 	}

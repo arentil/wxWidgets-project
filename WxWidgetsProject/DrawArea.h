@@ -2,6 +2,7 @@
 
 #include "Square.h"
 #include "Vector2D.h"
+#include "Matrix2D.h"
 #include <wx/wx.h>
 #include <list>
 #include <cstdlib>
@@ -13,6 +14,9 @@ public:
 	Square * getSquare(int x, int y);			//get square by row and col
 	void setColor(Square * sqr, Color color);	//set color into given square
 	void changePos(int x, int y);	//how far horizontally, how far vertically
+	void setScale(float scale);
+	float getScale();
+
 	void render(wxDC & dc);
 	void paintNow();
 
@@ -23,4 +27,5 @@ private:
 	int x_min, y_min, x_max, y_max;
 	int m_width, m_height;
 	int m_size;
+	float m_zoom;
 };

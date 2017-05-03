@@ -2,6 +2,7 @@
 
 RightPanel::RightPanel(wxFrame * frameParent, wxPanel * parent, wxWindowID winid, const wxString & sizertext) : wxPanel(parent, winid)
 {
+	canScale = false;
 	m_frameParent = frameParent;
 	m_parent = parent;
 	wxBoxSizer * sizer = new wxBoxSizer(wxVERTICAL);
@@ -15,4 +16,18 @@ RightPanel::RightPanel(wxFrame * frameParent, wxPanel * parent, wxWindowID winid
 void RightPanel::initialize(int width, int height, int size)
 {
 	m_drawpanel->initialize(width, height, size);
+	canScale = true;
+}
+
+void RightPanel::setScale(float scale)
+{
+	if (canScale)
+		m_drawpanel->setScale(scale);
+}
+
+float RightPanel::getScale()
+{
+	if (canScale)
+		return m_drawpanel->getScale();
+	return 0.0;
 }

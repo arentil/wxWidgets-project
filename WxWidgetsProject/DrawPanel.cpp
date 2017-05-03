@@ -23,6 +23,16 @@ void DrawPanel::initialize(int width, int height, int size)
 	SetEvtHandlerEnabled(true);
 }
 
+void DrawPanel::setScale(float scale)
+{
+	drawArea->setScale(scale);
+}
+
+float DrawPanel::getScale()
+{
+	return drawArea->getScale();
+}
+
 void DrawPanel::MouseMotion(wxMouseEvent & event)
 {
 	wxPoint p = event.GetPosition();
@@ -48,7 +58,13 @@ void DrawPanel::MouseLeftUp(wxMouseEvent & event)
 	wxPoint p = event.GetPosition();
 	if (colorChange)
 	{
-		drawArea->setColor(drawArea->getSquare(p.x, p.y), Color::red);
+		Square * sqr = drawArea->getSquare(p.x, p.y);
+		if (sqr == nullptr)
+		{
+			colorChange = true;
+			return;
+		}
+		drawArea->setColor(sqr, Color::red);
 		drawArea->paintNow();
 	}
 	colorChange = true;

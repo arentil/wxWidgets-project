@@ -1,5 +1,6 @@
 #include "DrawArea.h"
 #include <wx/dcbuffer.h>
+#include <cmath>
 
 DrawArea::DrawArea(wxPanel * parent, int width, int height, int size)
 {
@@ -11,7 +12,7 @@ DrawArea::DrawArea(wxPanel * parent, int width, int height, int size)
 	y_min = 0;
 	x_max = width * size;
 	y_max = height * size;
-
+	m_zoom = 1;
 
 	m_area = new Square**[m_width];
 	for (int i = 0; i < m_width; i++)
@@ -34,7 +35,10 @@ Square * DrawArea::getSquare(int x, int y)
 	div_t x_res, y_res;
 	x_res = div((x - x_min), m_size);
 	y_res = div((y - y_min), m_size);
-	return m_area[x_res.quot][y_res.quot];
+	if (x_res.quot < 0 || y_res.quot < 0 || x_res.quot >= m_width || y_res.quot >= m_height)
+		return nullptr;
+	else
+		return m_area[x_res.quot][y_res.quot];
 }
 
 void DrawArea::setColor(Square * sqr, Color color)
@@ -80,10 +84,61 @@ void DrawArea::changePos(int x, int y)
 	y_min += y;
 	x_max += x;
 	y_max += y;
+
+
+	float fmat[3][3] = {
+		{ 1, 0, x },
+		{ 0, 1, y },
+		{ 0, 0, 1 }
+	};
+	Matrix2D mat(fmat);
+	for (int i = 0; i < m_width; i++)
+	{
+		for (int j = 0; j < m_height; j++)
+		{
+			Vector2D vec(m_area[i][j]->getPos()[0], m_area[i][j]->getPos()[1]);
+			vec = mat * vec;
+			m_area[i][j]->setPos(vec);
+		}
+	}
+}
+
+void DrawArea::setScale(float scale)
+{
+	float fmat[3][3] = {
+		{ m_zoom + scale, 0, 0 },
+		{ 0, m_zoom + scale, 0 },
+		{ 0, 0, 1 }
+	};
+	Matrix2D mat(fmat);
+
+	for (int i = 0; i < m_width; i++)
+	{
+		for (int j = 0; j < m_height; j++)
+		{
+			Vector2D vec(m_area[i][j]->getPos()[0], m_area[i][j]->getPos()[1]);
+			vec = mat * vec;
+			m_area[i][j]->setPos(vec);
+		}
+	}
+
+	m_size = m_area[1][1]->getPos()[1] - m_area[0][0]->getPos()[1];
+	x_min = m_area[0][0]->getPos()[0];
+	y_min = m_area[0][0]->getPos()[1];
+	x_max = m_area[m_width - 1][m_height - 1]->getPos()[0] + m_size;
+	y_max = m_area[m_width - 1][m_height - 1]->getPos()[1] + m_size;
+	
+	paintNow();
+}
+
+float DrawArea::getScale()
+{
+	return m_zoom;
 }
 
 void DrawArea::render(wxDC & dc)
 {
+	//dc.DrawRectangle(x_min, y_min, x_max - x_min, y_max - y_min);
 	for (int i = 0; i < m_width; i++)
 	{
 		for (int j = 0; j < m_height; j++)
@@ -107,12 +162,11 @@ void DrawArea::render(wxDC & dc)
 			default:
 				break;
 			}
-
-			dc.DrawRectangle(i * m_size + x_min, j * m_size + y_min, m_size, m_size);
+			Vector2D vec = m_area[i][j]->getPos();
+			dc.DrawRectangle(vec[0], vec[1], m_size, m_size);
 			dc.SetBrush(wxColor("white"));
 		}
 	}
-
 }
 
 void DrawArea::paintNow()
