@@ -15,4 +15,5 @@ public:
 	void initialize(int width, int height, int size);
 	void setScale(float scale);
 	float getScale();
+	void deleteArea();
 };

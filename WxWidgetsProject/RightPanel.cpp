@@ -31,3 +31,8 @@ float RightPanel::getScale()
 		return m_drawpanel->getScale();
 	return 0.0;
 }
+
+void RightPanel::deleteArea()
+{
+	m_drawpanel->deleteArea();
+}

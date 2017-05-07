@@ -16,7 +16,7 @@ MainFrame::MainFrame(const wxString & title) : wxFrame(NULL, wxID_ANY, title, wx
 	m_mainsizer->Add(rightpanel, 1, wxEXPAND | wxALL, 5);
 	m_mainpanel->SetSizer(m_mainsizer);
 
-	m_menubar = new MenuBar(this);		//dodaje wlasny MenuBar
+	m_menubar = new MenuBar(this, rightpanel);		//dodaje wlasny MenuBar
 
 	Center();
 }

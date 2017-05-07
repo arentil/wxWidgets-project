@@ -12,6 +12,7 @@ public:
 	void initialize(int width, int height, int size);
 	void setScale(float scale);
 	float getScale();
+	void deleteArea();
 
 	void MouseMotion(wxMouseEvent & event);
 	void MouseLeftDown(wxMouseEvent & event);
@@ -26,6 +27,7 @@ private:
 	wxPoint dragStart;
 
 	bool colorChange;
+	bool isInitialized;
 
 	DECLARE_EVENT_TABLE()
 };

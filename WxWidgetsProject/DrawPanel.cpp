@@ -11,30 +11,53 @@ END_EVENT_TABLE()
 DrawPanel::DrawPanel(wxFrame * frameParent, wxPanel * parent, wxWindowID winid, wxPoint point, wxSize sizer)
 	: wxPanel(parent, winid, point, sizer)
 {
+	isInitialized = false;
+	drawArea = nullptr;
 	SetEvtHandlerEnabled(false);
 	m_frameParent = frameParent;
+	m_panelSize = sizer;
 }
 
 void DrawPanel::initialize(int width, int height, int size)
 {
+	deleteArea();
+	m_panelSize = GetSize();
 	drawArea = new DrawArea(this, width, height, size);
+	drawArea->setPanelSize(&m_panelSize);
+	isInitialized = true;
 	colorChange = true;
 	drawArea->paintNow();
 	SetEvtHandlerEnabled(true);
+
 }
 
 void DrawPanel::setScale(float scale)
 {
+	if (!isInitialized)
+		return;
 	drawArea->setScale(scale);
 }
 
 float DrawPanel::getScale()
 {
+	if (!isInitialized)
+		return 0.0;
 	return drawArea->getScale();
+}
+
+void DrawPanel::deleteArea()
+{
+	if (drawArea != nullptr)
+	{
+		drawArea->deleteArea();
+		delete drawArea;
+	}
 }
 
 void DrawPanel::MouseMotion(wxMouseEvent & event)
 {
+	if (!isInitialized)
+		return;
 	wxPoint p = event.GetPosition();
 	m_frameParent->SetStatusText("Point: " + wxString::Format(wxT("%i"), p.x) + ", " + wxString::Format(wxT("%i"), p.y), 0);
 	if (event.Dragging())
@@ -50,11 +73,15 @@ void DrawPanel::MouseMotion(wxMouseEvent & event)
 
 void DrawPanel::MouseLeftDown(wxMouseEvent & event)
 {
+	if (!isInitialized)
+		return;
 	dragStart = event.GetPosition();
 }
 
 void DrawPanel::MouseLeftUp(wxMouseEvent & event)
 {
+	if (!isInitialized)
+		return;
 	wxPoint p = event.GetPosition();
 	if (colorChange)
 	{
@@ -75,5 +102,8 @@ void DrawPanel::PanelResize(wxSizeEvent & event)
 	wxSize s = event.GetSize();
 	m_panelSize = s;
 	m_frameParent->SetStatusText("Size: " + wxString::Format(wxT("%i"), s.x) + ", " + wxString::Format(wxT("%i"), s.y), 1);
+	if (!isInitialized)
+		return;	
+	drawArea->setPanelSize(&m_panelSize);
 	drawArea->paintNow();
 }

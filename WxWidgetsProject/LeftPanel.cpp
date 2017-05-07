@@ -39,5 +39,5 @@ void LeftPanel::onCreateGrid(wxCommandEvent & event)
 	int width = wxAtoi(m_rows->GetValue());
 	int height = wxAtoi(m_cols->GetValue());
 	if (width > 0 && height > 0)
-		m_rightPanel->initialize(width, height, 20);
+		m_rightPanel->initialize(width, height, 15);
 }

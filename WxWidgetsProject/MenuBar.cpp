@@ -6,8 +6,9 @@ BEGIN_EVENT_TABLE(MenuBar, wxMenuBar)
 END_EVENT_TABLE()
 
 
-MenuBar::MenuBar(wxFrame * parent) : wxMenuBar()
+MenuBar::MenuBar(wxFrame * parent, RightPanel * rightpanel) : wxMenuBar()
 {
+	m_rightpanel = rightpanel;
 	m_parent = parent;
 	m_file = new wxMenu;
 	m_quit = new wxMenuItem(m_file, wxID_EXIT, "&Quit\tCtrl+W");
@@ -19,5 +20,6 @@ MenuBar::MenuBar(wxFrame * parent) : wxMenuBar()
 
 void MenuBar::OnQuit(wxCommandEvent & event)
 {
+	m_rightpanel->deleteArea();
 	m_parent->Close(true);
 }
