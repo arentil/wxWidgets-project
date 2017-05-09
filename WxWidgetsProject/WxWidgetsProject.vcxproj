@@ -154,6 +154,7 @@
     <ClCompile Include="MainFrame.cpp" />
     <ClCompile Include="Matrix2D.cpp" />
     <ClCompile Include="MenuBar.cpp" />
+    <ClCompile Include="PriorityQueue.cpp" />
     <ClCompile Include="RightPanel.cpp" />
     <ClCompile Include="Source.cpp" />
     <ClCompile Include="Square.cpp" />
@@ -167,6 +168,7 @@
     <ClInclude Include="MainFrame.h" />
     <ClInclude Include="Matrix2D.h" />
     <ClInclude Include="MenuBar.h" />
+    <ClInclude Include="PriorityQueue.h" />
     <ClInclude Include="RightPanel.h" />
     <ClInclude Include="Source.h" />
     <ClInclude Include="Square.h" />

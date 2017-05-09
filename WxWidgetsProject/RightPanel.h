@@ -13,7 +13,11 @@ public:
 
 	RightPanel(wxFrame * frameParent, wxPanel * parent, wxWindowID winid, const wxString & sizertext);
 	void initialize(int width, int height, int size);
-	void setScale(float scale);
+	void scale(float scale, int scaleVal);
 	float getScale();
 	void deleteArea();
+	void setColor(Color color);
+	void randomize();
+	void search();
+	void clearWalls();
 };

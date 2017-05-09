@@ -2,7 +2,7 @@
 
 #include "Vector2D.h"
 
-enum Color { white = 0, blue, green, red, path }; //(walkable, obstacje, start point, goal point, node in path to goal)
+enum class Color { white = 0, grey, green, red, path }; //(walkable, obstacje, start point, goal point, node in path to goal)
 
 class Square
 {
@@ -16,7 +16,21 @@ public:
 	Vector2D getPos();
 	Color getColor();
 
+	friend class Compare;
+
 private:
 	Vector2D m_pos;		//x, y of top-left corner (for drawRectangle)
 	Color m_color;	//colour of square
+
+	Square * m_previous;	//previous node for A*
+	float h, g, f;			// functions for A*
+};
+
+class Compare
+{
+public:
+	bool operator()(Square * node1, Square * node2)
+	{
+		return (node1->f > node2->f);
+	}
 };

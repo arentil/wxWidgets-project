@@ -19,10 +19,10 @@ void RightPanel::initialize(int width, int height, int size)
 	canScale = true;
 }
 
-void RightPanel::setScale(float scale)
+void RightPanel::scale(float scale, int scaleVal)
 {
 	if (canScale)
-		m_drawpanel->setScale(scale);
+		m_drawpanel->scale(scale, scaleVal);
 }
 
 float RightPanel::getScale()
@@ -35,4 +35,24 @@ float RightPanel::getScale()
 void RightPanel::deleteArea()
 {
 	m_drawpanel->deleteArea();
+}
+
+void RightPanel::setColor(Color color)
+{
+	m_drawpanel->setColor(color);
+}
+
+void RightPanel::randomize()
+{
+	m_drawpanel->randomize();
+}
+
+void RightPanel::search()
+{
+	m_drawpanel->search();
+}
+
+void RightPanel::clearWalls()
+{
+	m_drawpanel->clearWalls();
 }

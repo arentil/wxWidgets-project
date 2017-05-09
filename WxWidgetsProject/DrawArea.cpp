@@ -13,6 +13,8 @@ DrawArea::DrawArea(wxPanel * parent, int width, int height, int size)
 	x_max = width * size;
 	y_max = height * size;
 	m_zoom = 1;
+	start = nullptr;
+	goal = nullptr;
 
 	m_area = new Square**[m_width];
 	for (int i = 0; i < m_width; i++)
@@ -46,20 +48,38 @@ Square * DrawArea::getSquare(int x, int y)
 void DrawArea::setColor(Square * sqr, Color color)
 {
 	Color sqrCol = sqr->getColor();
+	if (color == Color::green && sqrCol != Color::green)
+	{
+		if (start != nullptr)
+			start->setColor(Color::white);
+		start = sqr;
+	}
+	if (color == Color::red && sqrCol != Color::red)
+	{
+		if (goal != nullptr)
+			goal->setColor(Color::white);
+		goal = sqr;
+	}
+	
+
+
 	switch (sqrCol)
 	{
 	case Color::white:
 		sqr->setColor(color);
 		break;
-	case Color::blue:
-		if (color == Color::blue)
+	case Color::grey:
+		if (color == Color::grey)
 			sqr->setColor(Color::white);
 		else
 			sqr->setColor(color);
 		break;
 	case Color::green:
 		if (color == Color::green)
+		{
 			sqr->setColor(Color::white);
+			start = nullptr;
+		}
 		else
 			sqr->setColor(color);
 		break;
@@ -71,7 +91,10 @@ void DrawArea::setColor(Square * sqr, Color color)
 		break;
 	case Color::red:
 		if (color == Color::red)
+		{
+			goal = nullptr;
 			sqr->setColor(Color::white);
+		}
 		else
 			sqr->setColor(color);
 		break;
@@ -105,14 +128,14 @@ void DrawArea::changePos(int x, int y)
 	}
 }
 
-void DrawArea::setScale(float scale)
+void DrawArea::scale(float scale, int scaleVal)
 {
 	if (m_size < 10 && scale < 0)
 		return;
 	if (scale > 0)
-		m_size += 3;
+		m_size += scaleVal;
 	else if (scale < 0)
-		m_size -= 3;
+		m_size -= scaleVal;
 
 	float fmat[3][3] = {
 		{ m_zoom + scale, 0, 0 },
@@ -142,6 +165,7 @@ void DrawArea::setScale(float scale)
 	
 	paintNow();
 }
+
 
 float DrawArea::getScale()
 {
@@ -184,11 +208,53 @@ void DrawArea::computeAreaToDraw()
 	}
 }
 
+void DrawArea::randomize()
+{
+	std::random_device rd;
+	std::mt19937 mt(rd());
+	std::uniform_int_distribution<int> dist1((m_width + m_height) * 0.1, m_width + m_height - (m_width + m_height) * 0.1);
+
+	std::vector<Square *> toRand;
+	for (int i = 0; i < m_width; i++)
+	{
+		for (int j = 0; j < m_height; j++)
+		{
+			toRand.push_back(m_area[i][j]);
+		}
+	}
+	std::random_shuffle(toRand.begin(), toRand.end());
+
+	for (int i = dist1(mt) - 1; i >= 0; i--)
+	{
+		toRand[i]->setColor(Color::grey);
+		toRand.pop_back();
+	}
+	toRand.clear();
+	paintNow();
+}
+
+void DrawArea::search()
+{
+	if (start == nullptr || goal == nullptr)
+		wxMessageBox(wxT("Set start and goal point first!"));
+}
+
+void DrawArea::clearWalls()
+{
+	for (int i = 0; i < m_width; i++)
+	{
+		for (int j = 0; j < m_height; j++)
+		{
+			if (m_area[i][j]->getColor() == Color::grey)
+				m_area[i][j]->setColor(Color::white);
+		}
+	}
+	paintNow();
+}
+
 void DrawArea::render(wxDC & dc)
 {
 	computeAreaToDraw(); 
-	//dc.SetBrush(wxColor("green"));
-	//dc.DrawRectangle(x_min, y_min, x_max - x_min, y_max - y_min);
 	for (std::list<Square *>::iterator it = toDraw.begin(); it != toDraw.end(); ++it)
 	{
 		switch ((*it)->getColor())
@@ -196,8 +262,8 @@ void DrawArea::render(wxDC & dc)
 		case Color::white:
 			dc.SetBrush(wxColor("white"));
 			break;
-		case Color::blue:
-			dc.SetBrush(wxColor("blue"));
+		case Color::grey:
+			dc.SetBrush(wxColor("grey"));
 			break;
 		case Color::green:
 			dc.SetBrush(wxColor("green"));

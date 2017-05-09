@@ -11,6 +11,7 @@ END_EVENT_TABLE()
 DrawPanel::DrawPanel(wxFrame * frameParent, wxPanel * parent, wxWindowID winid, wxPoint point, wxSize sizer)
 	: wxPanel(parent, winid, point, sizer)
 {
+	m_color = Color::grey;
 	isInitialized = false;
 	drawArea = nullptr;
 	SetEvtHandlerEnabled(false);
@@ -31,11 +32,11 @@ void DrawPanel::initialize(int width, int height, int size)
 
 }
 
-void DrawPanel::setScale(float scale)
+void DrawPanel::scale(float scale, int scaleVal)
 {
 	if (!isInitialized)
 		return;
-	drawArea->setScale(scale);
+	drawArea->scale(scale, scaleVal);
 }
 
 float DrawPanel::getScale()
@@ -52,6 +53,29 @@ void DrawPanel::deleteArea()
 		drawArea->deleteArea();
 		delete drawArea;
 	}
+}
+
+void DrawPanel::setColor(Color color)
+{
+	m_color = color;
+}
+
+void DrawPanel::randomize()
+{
+	if (isInitialized)
+		drawArea->randomize();
+}
+
+void DrawPanel::search()
+{
+	if (isInitialized)
+		drawArea->search();
+}
+
+void DrawPanel::clearWalls()
+{
+	if (isInitialized)
+		drawArea->clearWalls();
 }
 
 void DrawPanel::MouseMotion(wxMouseEvent & event)
@@ -91,7 +115,7 @@ void DrawPanel::MouseLeftUp(wxMouseEvent & event)
 			colorChange = true;
 			return;
 		}
-		drawArea->setColor(sqr, Color::red);
+		drawArea->setColor(sqr, m_color);
 		drawArea->paintNow();
 	}
 	colorChange = true;

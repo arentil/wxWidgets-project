@@ -10,9 +10,13 @@ public:
 
 	DrawPanel(wxFrame * frameParent, wxPanel * parent, wxWindowID winid, wxPoint point, wxSize sizer);
 	void initialize(int width, int height, int size);
-	void setScale(float scale);
+	void scale(float scale, int scaleVal);
 	float getScale();
 	void deleteArea();
+	void setColor(Color color);
+	void randomize();
+	void search();
+	void clearWalls();
 
 	void MouseMotion(wxMouseEvent & event);
 	void MouseLeftDown(wxMouseEvent & event);
@@ -26,6 +30,7 @@ private:
 
 	wxPoint dragStart;
 
+	Color m_color;
 	bool colorChange;
 	bool isInitialized;
 

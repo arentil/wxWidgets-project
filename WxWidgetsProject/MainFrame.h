@@ -23,11 +23,13 @@ public:
 
 
 	RightPanel * rightpanel;
+	LeftPanel * leftpanel;
 
 	MainFrame(const wxString & title);
-	void setScale(float scale);
+	void scale(float scale, int scaleVal);
 
 	void onMouseScroll(wxMouseEvent & event);
+	void onFKeyPressed(wxKeyEvent & event);
 
 private:
 	DECLARE_EVENT_TABLE()
