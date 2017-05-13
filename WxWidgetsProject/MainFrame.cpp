@@ -48,6 +48,8 @@ void MainFrame::onFKeyPressed(wxKeyEvent & event)
 	case 342:
 		leftpanel->setSelection(2);
 		break;
+	case 344:
+		leftpanel->execSearch();
 	default:
 		event.Skip();
 		break;

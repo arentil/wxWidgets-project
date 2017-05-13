@@ -14,19 +14,29 @@ enum class BUTTON_ID : short
 	BUT_CLEARWALLS_ID
 };
 
+enum class CHECKBOX_ID : short
+{
+	CBOX_ALLOWDIAG = 200,
+	CBOX_SHOWFUNCVAL
+};
+
 class LeftPanel : public wxPanel
 {
 public:
 	LeftPanel(wxFrame * frameParent, wxPanel * parent, RightPanel * rightPanel, wxWindowID winid, wxPoint point, wxSize size, const wxString & sizertext);
 	int getScaleValue();
-
 	void setSelection(int selection);
+	void execSearch();
+
 	void onCreateGrid(wxCommandEvent & event);
 	void onRandPushed(wxCommandEvent & event);
 	void onGenPushed(wxCommandEvent & event);
 	void onSearchPushed(wxCommandEvent & event);
 	void onClearPathPushed(wxCommandEvent & event);
 	void onClearWallsPushed(wxCommandEvent & event);
+	void onAllowDiagMarked(wxCommandEvent & event);
+	void onShowFuncValMarked(wxCommandEvent & event);
+	void onHeuristicChange(wxCommandEvent & event);
 
 private:
 	wxFrame * m_frameParent;
@@ -51,6 +61,15 @@ private:
 	//RANDOMIZE AND GENERATE LABYRINTH
 	wxButton * randomize;
 	wxButton * generateL;
+	//------
+
+	//HEURISTIC
+	wxRadioBox * heuristic;
+	//------
+
+	//OPTIONS
+	wxCheckBox * diagonal;
+	wxCheckBox * showFuncs;
 	//------
 
 	//A* BUTTONS

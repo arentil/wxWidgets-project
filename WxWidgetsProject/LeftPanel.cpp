@@ -7,6 +7,9 @@ BEGIN_EVENT_TABLE(LeftPanel, wxPanel)
 	EVT_BUTTON((short)BUTTON_ID::BUT_SEARCH_ID, LeftPanel::onSearchPushed)
 	EVT_BUTTON((short)BUTTON_ID::BUT_CLEARPATH_ID, LeftPanel::onClearPathPushed)
 	EVT_BUTTON((short)BUTTON_ID::BUT_CLEARWALLS_ID, LeftPanel::onClearWallsPushed)
+	EVT_CHECKBOX((short)CHECKBOX_ID::CBOX_SHOWFUNCVAL, LeftPanel::onShowFuncValMarked)
+	EVT_CHECKBOX((short)CHECKBOX_ID::CBOX_ALLOWDIAG, LeftPanel::onAllowDiagMarked)
+	EVT_RADIOBOX(250, LeftPanel::onHeuristicChange)
 END_EVENT_TABLE()
 
 
@@ -72,14 +75,16 @@ LeftPanel::LeftPanel(wxFrame * frameParent, wxPanel * parent, RightPanel * right
 	wxArrayString h_array;
 	h_array.Add(wxT("Manhattan"));
 	h_array.Add(wxT("Diagonal"));
-	wxRadioBox * heuristic = new wxRadioBox(this, wxID_ANY, "Heuristic:", wxDefaultPosition, wxSize(200, 55), h_array, 1, wxRA_SPECIFY_ROWS);
+	heuristic = new wxRadioBox(this, 250, "Heuristic:", wxDefaultPosition, wxSize(200, 55), h_array, 1, wxRA_SPECIFY_ROWS);
 	sbox1->Add(heuristic);
 	//--------
 
 	//OPTIONS
 	wxStaticBoxSizer * options = new wxStaticBoxSizer(wxVERTICAL, this, "Options:");
-	wxCheckBox * diagonal = new wxCheckBox(this, wxID_ANY, "Allow diagonal", wxDefaultPosition, wxSize(200, 30));
+	diagonal = new wxCheckBox(this, (short)CHECKBOX_ID::CBOX_ALLOWDIAG, "Allow diagonal", wxDefaultPosition, wxSize(200, 20));
+	showFuncs = new wxCheckBox(this, (short)CHECKBOX_ID::CBOX_SHOWFUNCVAL, "Show function values", wxDefaultPosition, wxSize(200, 15));
 	options->Add(diagonal);
+	options->Add(showFuncs);
 	sbox1->Add(options);
 	//--------
 
@@ -122,6 +127,11 @@ void LeftPanel::setSelection(int selection)
 	}
 }
 
+void LeftPanel::execSearch()
+{
+	m_rightPanel->search();
+}
+
 void LeftPanel::onCreateGrid(wxCommandEvent & event)
 {
 	if (m_rows->GetValue() == wxEmptyString || m_cols->GetValue() == wxEmptyString)
@@ -142,7 +152,7 @@ void LeftPanel::onRandPushed(wxCommandEvent & event)
 
 void LeftPanel::onGenPushed(wxCommandEvent & event)
 {
-
+	//generate labyrinth
 }
 
 void LeftPanel::onSearchPushed(wxCommandEvent & event)
@@ -152,10 +162,39 @@ void LeftPanel::onSearchPushed(wxCommandEvent & event)
 
 void LeftPanel::onClearPathPushed(wxCommandEvent & event)
 {
-
+	m_rightPanel->clearPath();
 }
 
 void LeftPanel::onClearWallsPushed(wxCommandEvent & event)
 {
 	m_rightPanel->clearWalls();
+}
+
+void LeftPanel::onAllowDiagMarked(wxCommandEvent & event)
+{
+	//allow diagonal
+}
+
+void LeftPanel::onShowFuncValMarked(wxCommandEvent & event)
+{
+	if (showFuncs->IsChecked())
+		m_rightPanel->setShowFuncValues(true);
+	else
+		m_rightPanel->setShowFuncValues(false);
+}
+
+void LeftPanel::onHeuristicChange(wxCommandEvent & event)
+{
+	switch (heuristic->GetSelection())
+	{
+	case 0:
+		m_rightPanel->setHeuristic(Heuristic::MANHATTAN);
+		break;
+	case 1:
+		m_rightPanel->setHeuristic(Heuristic::DIAGONAL);
+		break;
+	default:
+		break;
+	}
+
 }

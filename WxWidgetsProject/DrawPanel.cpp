@@ -78,6 +78,24 @@ void DrawPanel::clearWalls()
 		drawArea->clearWalls();
 }
 
+void DrawPanel::setShowFuncValues(bool showVals)
+{
+	if (isInitialized)
+		drawArea->setShowFuncValues(showVals);
+}
+
+void DrawPanel::clearPath()
+{
+	if (isInitialized)
+		drawArea->clearPath();
+}
+
+void DrawPanel::setHeuristic(Heuristic h)
+{
+	if (isInitialized)
+		drawArea->setHeuristic(h);
+}
+
 void DrawPanel::MouseMotion(wxMouseEvent & event)
 {
 	if (!isInitialized)

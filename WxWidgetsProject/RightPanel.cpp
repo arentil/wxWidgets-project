@@ -56,3 +56,18 @@ void RightPanel::clearWalls()
 {
 	m_drawpanel->clearWalls();
 }
+
+void RightPanel::setShowFuncValues(bool showVals)
+{
+	m_drawpanel->setShowFuncValues(showVals);
+}
+
+void RightPanel::clearPath()
+{
+	m_drawpanel->clearPath();
+}
+
+void RightPanel::setHeuristic(Heuristic h)
+{
+	m_drawpanel->setHeuristic(h);
+}

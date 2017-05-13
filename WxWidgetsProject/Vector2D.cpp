@@ -36,6 +36,13 @@ float Vector2D::operator[](const int i) const
 	return m_vec[i];
 }
 
+bool Vector2D::operator==(const Vector2D & vec) const
+{
+	if (m_vec[0] == vec[0] && m_vec[1] == vec[1] && m_vec[2] == vec[2])
+		return true;
+	return false;
+}
+
 void Vector2D::setXY(const float x, const float y)
 {
 	m_vec[0] = x;

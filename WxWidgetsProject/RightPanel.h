@@ -20,4 +20,7 @@ public:
 	void randomize();
 	void search();
 	void clearWalls();
+	void setShowFuncValues(bool showVals);
+	void clearPath();
+	void setHeuristic(Heuristic h);
 };

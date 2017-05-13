@@ -8,6 +8,7 @@ PriorityQueue::PriorityQueue()
 void PriorityQueue::push(Square * x)
 {
 	p_queue.push_back(x);
+	sortQ();
 }
 
 Square * PriorityQueue::top() const

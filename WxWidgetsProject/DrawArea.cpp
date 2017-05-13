@@ -1,6 +1,4 @@
 #include "DrawArea.h"
-#include <wx/dcbuffer.h>
-#include <cmath>
 
 DrawArea::DrawArea(wxPanel * parent, int width, int height, int size)
 {
@@ -15,6 +13,8 @@ DrawArea::DrawArea(wxPanel * parent, int width, int height, int size)
 	m_zoom = 1;
 	start = nullptr;
 	goal = nullptr;
+	m_heuristic = Heuristic::MANHATTAN;
+	m_showFuncValues = false;
 
 	m_area = new Square**[m_width];
 	for (int i = 0; i < m_width; i++)
@@ -35,8 +35,6 @@ DrawArea::DrawArea(wxPanel * parent, int width, int height, int size)
 Square * DrawArea::getSquare(int x, int y)
 {
 	div_t x_res, y_res;
-	x_res = div((x - x_min), m_size);
-	y_res = div((y - y_min), m_size);
 	x_res = div((x - x_min), m_size);
 	y_res = div((y - y_min), m_size);
 	if (x_res.quot < 0 || y_res.quot < 0 || x_res.quot >= m_width || y_res.quot >= m_height || x < x_min || y < y_min)
@@ -83,8 +81,8 @@ void DrawArea::setColor(Square * sqr, Color color)
 		else
 			sqr->setColor(color);
 		break;
-	case Color::path:
-		if (color == Color::path)
+	case Color::yellow:
+		if (color == Color::yellow)
 			sqr->setColor(Color::white);
 		else
 			sqr->setColor(color);
@@ -177,6 +175,17 @@ void DrawArea::setPanelSize(wxSize * panelSize)
 	m_panelSize = panelSize;
 }
 
+void DrawArea::setShowFuncValues(bool showVals)
+{
+	m_showFuncValues = showVals;
+	paintNow();
+}
+
+void DrawArea::setHeuristic(Heuristic h)
+{
+	m_heuristic = h;
+}
+
 void DrawArea::computeAreaToDraw()
 {
 	int i_min = 0;
@@ -226,17 +235,184 @@ void DrawArea::randomize()
 
 	for (int i = dist1(mt) - 1; i >= 0; i--)
 	{
-		toRand[i]->setColor(Color::grey);
+		if (toRand[i]->getColor() == Color::white)
+			toRand[i]->setColor(Color::grey);
 		toRand.pop_back();
 	}
 	toRand.clear();
 	paintNow();
 }
 
+int DrawArea::getHeuristic(Square * from, Square * to)
+{
+	int h = 0;
+	div_t fx_res, fy_res, tx_res, ty_res;
+	fx_res = div((from->getPos()[0] + 1 - x_min), m_size);
+	fy_res = div((from->getPos()[1] + 1 - y_min), m_size);
+	tx_res = div((to->getPos()[0] + 1 - x_min), m_size);
+	ty_res = div((to->getPos()[1] + 1 - y_min), m_size);
+	int xd = abs(fx_res.quot - tx_res.quot);
+	int yd = abs(fy_res.quot - ty_res.quot);
+	switch (m_heuristic)
+	{
+	case Heuristic::MANHATTAN:
+		h = (10 * (xd + yd));
+		break;
+	case Heuristic::DIAGONAL:
+		if (xd > yd)
+			h = ((14 * yd) + (10 * (xd - yd)));
+		else
+			h = ((14 * xd) + (10 * (yd - xd)));
+		break;
+	default:
+		break;
+	}
+	from->setH(h);
+	return h;
+}
+
 void DrawArea::search()
 {
 	if (start == nullptr || goal == nullptr)
+	{
 		wxMessageBox(wxT("Set start and goal point first!"));
+		return;
+	}
+	clearPath();
+
+	PriorityQueue open;	
+	goal->isGoal = true;
+	start->onOpen = true;	//add to open set
+	start->onClosed = false;
+	start->setParent(nullptr);
+	start->setG(0);
+	start->setF(getHeuristic(start, goal));
+	open.push(start);
+
+	while (!open.empty())
+	{
+		Square * best = open.top();
+		open.pop();
+		best->onOpen = false;
+		best->onClosed = true;
+		best->setColor(Color::cyan);
+		if (best->isGoal)
+		{
+			finalPath(start, goal);
+			paintNow();
+			return;
+		}
+
+		for (int i = 0; i < 8; i++)
+		{
+			Square * neighbor = getNeighbor(best, i);
+			if (neighbor == nullptr || neighbor->getColor() == Color::grey || neighbor->onClosed == true)
+				continue;
+
+			int tentG = best->getG() + ((i % 2 == 0) ? 10 : 14);
+
+			if (neighbor->onOpen == true && (tentG < neighbor->getG()))
+			{
+				neighbor->setParent(best);
+				neighbor->setG(tentG);
+				neighbor->setF(neighbor->getG() + getHeuristic(neighbor, goal));
+				open.sortQ();
+			}
+			if (neighbor->onOpen == false)
+			{
+				neighbor->setParent(best);
+				neighbor->setG(tentG);
+				neighbor->setF(neighbor->getG() + getHeuristic(neighbor, goal));
+				neighbor->onOpen = true;
+				neighbor->setColor(Color::lightgreen);
+				open.push(neighbor);
+			}
+		}
+	}
+	start->setColor(Color::green);
+	paintNow();
+	wxMessageBox(wxT("Path not found!"));
+}
+
+void DrawArea::finalPath(Square * from, Square * to)
+{
+	Square * temp = to;
+	while ((*temp) != (*from))
+	{
+		temp = temp->getParent();
+		temp->setColor(Color::yellow);
+	}
+	start->setColor(Color::green);
+	goal->setColor(Color::red);
+}
+
+Square * DrawArea::getNeighbor(Square * from, int n)
+{
+	div_t x_res, y_res;
+	x_res = div((from->getPos()[0] + 1 - x_min), m_size);
+	y_res = div((from->getPos()[1] + 1 - y_min), m_size);
+	int x = x_res.quot;
+	int y = y_res.quot;
+	Square * temp = nullptr;
+
+	switch (n)
+	{
+	case 0:
+		if (x - 1 >= 0)
+			temp = m_area[x - 1][y];
+		break;
+	case 1:
+		if (x - 1 >= 0 && y + 1 < m_width)
+			temp = m_area[x - 1][y + 1];
+		break;
+	case 2:
+		if (y + 1 < m_width)
+			temp = m_area[x][y + 1];
+		break;
+	case 3:
+		if (x + 1 < m_height && y + 1 < m_width)
+			temp = m_area[x + 1][y + 1];
+		break;
+	case 4:
+		if (x + 1 < m_height)
+			temp = m_area[x + 1][y];
+		break;
+	case 5:
+		if (x + 1 < m_height && y - 1 >= 0)
+			temp = m_area[x + 1][y - 1];
+		break;
+	case 6:
+		if (y - 1 >= 0)
+			temp = m_area[x][y - 1];
+		break;
+	case 7:
+		if (x - 1 >= 0 && y - 1 >= 0)
+			temp = m_area[x - 1][y - 1];
+		break;
+	}
+
+	return temp;
+}
+
+void DrawArea::clearPath()
+{
+	for (int i = 0; i < m_width; i++)
+	{
+		for (int j = 0; j < m_height; j++)
+		{
+			Square * temp = m_area[i][j];
+			if (temp->getColor() != Color::grey && temp->getColor() != Color::red && temp->getColor() != Color::green)
+				temp->setColor(Color::white);
+			temp->isGoal = false;
+			temp->onClosed = false;
+			temp->onOpen = false;
+			temp->setF(0);
+			temp->setG(0);
+			temp->setH(0);
+			temp->setParent(nullptr);
+		}
+	}
+	paintNow();
 }
 
 void DrawArea::clearWalls()
@@ -268,17 +444,36 @@ void DrawArea::render(wxDC & dc)
 		case Color::green:
 			dc.SetBrush(wxColor("green"));
 			break;
-		case Color::path:
-			dc.SetBrush(wxColor("yellow"));
+		case Color::yellow:
+			dc.SetBrush(wxColor(255,255,100));
 			break;
 		case Color::red:
 			dc.SetBrush(wxColor("red"));
 			break;
+		case Color::lightgreen:
+			dc.SetBrush(wxColor(155, 255, 157));
+			break;
+		case Color::cyan:
+			dc.SetBrush(wxColor(100,255,255));
 		default:
 			break;
 		}
 		Vector2D vec =(*it)->getPos();
 		dc.DrawRectangle(vec[0], vec[1], m_size, m_size);
+		if (m_showFuncValues && (*it)->getColor() != Color::grey && (*it)->getColor() != Color::white)
+		{
+			if (m_size > 35)
+			{
+				wxString hh = wxString::Format(wxT("%i"), (*it)->getH());
+				wxString gg = wxString::Format(wxT("%i"), (*it)->getG());
+				wxString ff = wxString::Format(wxT("%i"), (*it)->getF());
+				int x = vec[0] + m_size / 2 - 5;
+				int y = vec[1] + m_size / 2 - 5;
+				dc.DrawText(hh, x, y - 10);
+				dc.DrawText(gg, x, y);
+				dc.DrawText(ff, x, y + 10);
+			}
+		}
 		dc.SetBrush(wxColor("white"));
 	}
 }
@@ -288,6 +483,7 @@ void DrawArea::paintNow()
 	wxClientDC cdc(m_parent);
 	wxBufferedDC dc(&cdc);
 	dc.Clear();
+	dc.SetPen(wxColor("grey"));
 	render(dc);
 }
 
