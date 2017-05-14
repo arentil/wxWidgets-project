@@ -10,6 +10,7 @@ BEGIN_EVENT_TABLE(LeftPanel, wxPanel)
 	EVT_CHECKBOX((short)CHECKBOX_ID::CBOX_SHOWFUNCVAL, LeftPanel::onShowFuncValMarked)
 	EVT_CHECKBOX((short)CHECKBOX_ID::CBOX_ALLOWDIAG, LeftPanel::onAllowDiagMarked)
 	EVT_RADIOBOX(250, LeftPanel::onHeuristicChange)
+	EVT_RADIOBOX(249, LeftPanel::onColorChange)
 END_EVENT_TABLE()
 
 
@@ -58,7 +59,7 @@ LeftPanel::LeftPanel(wxFrame * frameParent, wxPanel * parent, RightPanel * right
 	col_array.Add(wxT("Walls( F1 )"));
 	col_array.Add(wxT("Start ( F2 )"));
 	col_array.Add(wxT("Goal ( F3 )"));
-	color = new wxRadioBox(this, wxID_ANY, "Selected color:", wxDefaultPosition, wxSize(200, 100), col_array, 3, wxRA_SPECIFY_ROWS);
+	color = new wxRadioBox(this, 249, "Selected color:", wxDefaultPosition, wxSize(200, 100), col_array, 3, wxRA_SPECIFY_ROWS);
 	sbox1->Add(color);
 	//--------
 
@@ -90,7 +91,7 @@ LeftPanel::LeftPanel(wxFrame * frameParent, wxPanel * parent, RightPanel * right
 
 	//A* BUTTONS
 	wxStaticBoxSizer * aStarControl = new wxStaticBoxSizer(wxVERTICAL, this, "A* Algorithm control:");
-	search = new wxButton(this, (short)BUTTON_ID::BUT_SEARCH_ID, "Search");
+	search = new wxButton(this, (short)BUTTON_ID::BUT_SEARCH_ID, "Search ( F5 )");
 	clearPath = new wxButton(this, (short)BUTTON_ID::BUT_CLEARPATH_ID, "Clear Path");
 	clearWalls = new wxButton(this, (short)BUTTON_ID::BUT_CLEARWALLS_ID, "Clear walls");
 	aStarControl->Add(search);
@@ -196,5 +197,22 @@ void LeftPanel::onHeuristicChange(wxCommandEvent & event)
 	default:
 		break;
 	}
+}
 
+void LeftPanel::onColorChange(wxCommandEvent & event)
+{
+	switch (color->GetSelection())
+	{
+	case 0:
+		m_rightPanel->setColor(Color::grey);
+		break;
+	case 1:
+		m_rightPanel->setColor(Color::green);
+		break;
+	case 2:
+		m_rightPanel->setColor(Color::red);
+		break;
+	default:
+		break;
+	}
 }

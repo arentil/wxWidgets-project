@@ -37,6 +37,7 @@ public:
 	void onAllowDiagMarked(wxCommandEvent & event);
 	void onShowFuncValMarked(wxCommandEvent & event);
 	void onHeuristicChange(wxCommandEvent & event);
+	void onColorChange(wxCommandEvent & event);
 
 private:
 	wxFrame * m_frameParent;

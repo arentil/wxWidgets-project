@@ -464,13 +464,13 @@ void DrawArea::render(wxDC & dc)
 		{
 			if (m_size > 35)
 			{
-				wxString hh = wxString::Format(wxT("%i"), (*it)->getH());
 				wxString gg = wxString::Format(wxT("%i"), (*it)->getG());
+				wxString hh = wxString::Format(wxT("%i"), (*it)->getH());
 				wxString ff = wxString::Format(wxT("%i"), (*it)->getF());
 				int x = vec[0] + m_size / 2 - 5;
 				int y = vec[1] + m_size / 2 - 5;
-				dc.DrawText(hh, x, y - 10);
-				dc.DrawText(gg, x, y);
+				dc.DrawText(gg, x, y - 10);
+				dc.DrawText(hh, x, y);
 				dc.DrawText(ff, x, y + 10);
 			}
 		}
