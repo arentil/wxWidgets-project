@@ -96,6 +96,12 @@ void DrawPanel::setHeuristic(Heuristic h)
 		drawArea->setHeuristic(h);
 }
 
+void DrawPanel::allowDiagonal(bool allow)
+{
+	if (isInitialized)
+		drawArea->allowDiagonal(allow);
+}
+
 void DrawPanel::MouseMotion(wxMouseEvent & event)
 {
 	if (!isInitialized)

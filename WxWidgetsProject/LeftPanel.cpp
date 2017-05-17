@@ -144,6 +144,11 @@ void LeftPanel::onCreateGrid(wxCommandEvent & event)
 		size = sizeSpin->GetValue();
 	if (width > 0 && height > 0)
 		m_rightPanel->initialize(width, height, sizeSpin->GetValue());
+
+	onAllowDiagMarked(event);
+	onShowFuncValMarked(event);
+	onHeuristicChange(event);
+	onColorChange(event);
 }
 
 void LeftPanel::onRandPushed(wxCommandEvent & event)
@@ -173,7 +178,12 @@ void LeftPanel::onClearWallsPushed(wxCommandEvent & event)
 
 void LeftPanel::onAllowDiagMarked(wxCommandEvent & event)
 {
-	//allow diagonal
+	if (diagonal->IsChecked())
+	{
+		m_rightPanel->allowDiagonal(true);
+	}
+	else
+		m_rightPanel->allowDiagonal(false);
 }
 
 void LeftPanel::onShowFuncValMarked(wxCommandEvent & event)

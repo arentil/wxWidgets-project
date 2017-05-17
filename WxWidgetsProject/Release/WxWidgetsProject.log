@@ -101,7 +101,7 @@ C:\wxWidgets-3.1.0\include\wx/wxcrt.h(922): warning C4996: '_wgetenv': This func
   C:\Program Files (x86)\Windows Kits\10\Include\10.0.10240.0\ucrt\corecrt_wstdlib.h(416): note: see declaration of '_wgetenv'
 C:\wxWidgets-3.1.0\include\wx/filefn.h(426): warning C4996: '_wopen': This function or variable may be unsafe. Consider using _wsopen_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
   C:\Program Files (x86)\Windows Kits\10\Include\10.0.10240.0\ucrt\corecrt_wio.h(227): note: see declaration of '_wopen'
-DrawArea.cpp(116): warning C4838: conversion from 'int' to 'float' requires a narrowing conversion
+DrawArea.cpp(115): warning C4838: conversion from 'int' to 'float' requires a narrowing conversion
   DrawPanel.cpp
   LeftPanel.cpp
   MainFrame.cpp
@@ -116,7 +116,7 @@ MainFrame.cpp(35): warning C4305: 'argument': truncation from 'double' to 'float
   StatusBar.cpp
   Vector2D.cpp
   Generating code
-  All 1173 functions were compiled because no usable IPDB/IOBJ from previous compilation was found.
+  All 1176 functions were compiled because no usable IPDB/IOBJ from previous compilation was found.
   Finished generating code
   WxWidgetsProject.vcxproj -> D:\Moje pliki\programowanie\wxWidgets\WxWidgets project\wxWidgets-project\Release\WxWidgetsProject.exe
   WxWidgetsProject.vcxproj -> D:\Moje pliki\programowanie\wxWidgets\WxWidgets project\wxWidgets-project\Release\WxWidgetsProject.pdb (Full PDB)

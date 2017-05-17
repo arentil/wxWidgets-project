@@ -71,3 +71,8 @@ void RightPanel::setHeuristic(Heuristic h)
 {
 	m_drawpanel->setHeuristic(h);
 }
+
+void RightPanel::allowDiagonal(bool allow)
+{
+	m_drawpanel->allowDiagonal(allow);
+}

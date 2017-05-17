@@ -15,6 +15,7 @@ DrawArea::DrawArea(wxPanel * parent, int width, int height, int size)
 	goal = nullptr;
 	m_heuristic = Heuristic::MANHATTAN;
 	m_showFuncValues = false;
+	m_allowDiagonal = false;
 
 	m_area = new Square**[m_width];
 	for (int i = 0; i < m_width; i++)
@@ -59,8 +60,6 @@ void DrawArea::setColor(Square * sqr, Color color)
 		goal = sqr;
 	}
 	
-
-
 	switch (sqrCol)
 	{
 	case Color::white:
@@ -278,7 +277,7 @@ void DrawArea::search()
 		wxMessageBox(wxT("Set start and goal point first!"));
 		return;
 	}
-	clearPath();
+	clearPath();		//sprz¹tanie po ewentualnym poprzednim przejœciu
 
 	PriorityQueue open;	
 	goal->isGoal = true;
@@ -305,6 +304,8 @@ void DrawArea::search()
 
 		for (int i = 0; i < 8; i++)
 		{
+			if (!m_allowDiagonal && (i % 2))
+				continue;
 			Square * neighbor = getNeighbor(best, i);
 			if (neighbor == nullptr || neighbor->getColor() == Color::grey || neighbor->onClosed == true)
 				continue;
@@ -497,4 +498,9 @@ void DrawArea::deleteArea()
 			m_area[i][j] = nullptr;
 		}
 	}
+}
+
+void DrawArea::allowDiagonal(bool allow)
+{
+	m_allowDiagonal = allow;
 }

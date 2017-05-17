@@ -20,6 +20,7 @@ public:
 	void setShowFuncValues(bool showVals);
 	void clearPath();
 	void setHeuristic(Heuristic h);
+	void allowDiagonal(bool allow);
 
 	void MouseMotion(wxMouseEvent & event);
 	void MouseLeftDown(wxMouseEvent & event);

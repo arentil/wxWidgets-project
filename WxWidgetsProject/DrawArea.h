@@ -31,6 +31,7 @@ public:
 	void setShowFuncValues(bool showVals);
 	void setHeuristic(Heuristic h);
 	void deleteArea();			//delete all squares
+	void allowDiagonal(bool allow);
 
 	//GENERATING OBSTACLES
 	void randomize();
@@ -63,7 +64,7 @@ private:
 	Square * goal;
 	Color selectedColor;
 	Heuristic m_heuristic;
-	bool allowDiagonal;
+	bool m_allowDiagonal;
 
 	int x_min, y_min, x_max, y_max;
 	int m_width, m_height;

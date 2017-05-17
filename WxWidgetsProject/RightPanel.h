@@ -23,4 +23,5 @@ public:
 	void setShowFuncValues(bool showVals);
 	void clearPath();
 	void setHeuristic(Heuristic h);
+	void allowDiagonal(bool allow);
 };
