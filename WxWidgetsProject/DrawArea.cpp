@@ -304,10 +304,10 @@ void DrawArea::search()
 
 		for (int i = 0; i < 8; i++)
 		{
-			if (!m_allowDiagonal && (i % 2))
-				continue;
 			Square * neighbor = getNeighbor(best, i);
 			if (neighbor == nullptr || neighbor->getColor() == Color::grey || neighbor->onClosed == true)
+				continue;
+			if (!m_allowDiagonal && (i % 2) || unreachableCorner(best, i))
 				continue;
 
 			int tentG = best->getG() + ((i % 2 == 0) ? 10 : 14);
@@ -427,6 +427,40 @@ void DrawArea::clearWalls()
 		}
 	}
 	paintNow();
+}
+
+bool DrawArea::unreachableCorner(Square * from, int n)
+{
+	bool ret = false;
+	switch (n)
+	{
+	case 1:
+		ret = isUnreachable(from, 0, 2);
+		break;
+	case 3:
+		ret = isUnreachable(from, 2, 4);
+		break;
+	case 5:
+		ret = isUnreachable(from, 4, 6);
+		break;
+	case 7:
+		ret = isUnreachable(from, 6, 0);
+		break;
+	default:
+		break;
+	}
+	return ret;
+}
+
+bool DrawArea::isUnreachable(Square * from, int n1, int n2)
+{
+	bool ret = false;
+	Square * neighbor1 = getNeighbor(from, n1);
+	Square * neighbor2 = getNeighbor(from, n2);
+	if (neighbor1->getColor() == Color::grey && neighbor2->getColor() == Color::grey)
+		ret = true;
+
+	return ret;
 }
 
 void DrawArea::render(wxDC & dc)

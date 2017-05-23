@@ -45,6 +45,8 @@ public:
 	Square * getNeighbor(Square * from, int n);
 	void clearPath();
 	void clearWalls();
+	bool unreachableCorner(Square * from, int n);		//check if corner is between two squares, if so, skip those
+	bool isUnreachable(Square * from, int n1, int n2);
 	//------
 
 	//COMPUTING AREA/RENDERING
