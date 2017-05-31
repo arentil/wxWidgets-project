@@ -3,12 +3,13 @@
 BEGIN_EVENT_TABLE(LeftPanel, wxPanel)
 	EVT_BUTTON((short)BUTTON_ID::BUT_CREATE_ID, LeftPanel::onCreateGrid)
 	EVT_BUTTON((short)BUTTON_ID::BUT_RANDOMIZE_ID, LeftPanel::onRandPushed)
-	EVT_BUTTON((short)BUTTON_ID::BUT_GENERATEL_ID, LeftPanel::onGenPushed)
 	EVT_BUTTON((short)BUTTON_ID::BUT_SEARCH_ID, LeftPanel::onSearchPushed)
 	EVT_BUTTON((short)BUTTON_ID::BUT_CLEARPATH_ID, LeftPanel::onClearPathPushed)
 	EVT_BUTTON((short)BUTTON_ID::BUT_CLEARWALLS_ID, LeftPanel::onClearWallsPushed)
 	EVT_CHECKBOX((short)CHECKBOX_ID::CBOX_SHOWFUNCVAL, LeftPanel::onShowFuncValMarked)
 	EVT_CHECKBOX((short)CHECKBOX_ID::CBOX_ALLOWDIAG, LeftPanel::onAllowDiagMarked)
+	EVT_CHECKBOX((short)CHECKBOX_ID::CBOX_COMPAREWITHDIJKSTA, LeftPanel::onCompareWithDijkstra)
+	EVT_CHECKBOX((short)CHECKBOX_ID::CBOX_COMPAREWITHBELLMANFORD, LeftPanel::onCompareWithBellmanFord)
 	EVT_RADIOBOX(250, LeftPanel::onHeuristicChange)
 	EVT_RADIOBOX(249, LeftPanel::onColorChange)
 END_EVENT_TABLE()
@@ -30,11 +31,9 @@ LeftPanel::LeftPanel(wxFrame * frameParent, wxPanel * parent, RightPanel * right
 	sbox1->Add(sizerCreate1);
 
 	//RANDOMIZE AND GENERATE LABYRINTH
-	wxStaticBoxSizer * randGen = new wxStaticBoxSizer(wxVERTICAL, this, "Randomize or generate:");
+	wxStaticBoxSizer * randGen = new wxStaticBoxSizer(wxVERTICAL, this, "Randomize:");
 	randomize = new wxButton(this, (short)BUTTON_ID::BUT_RANDOMIZE_ID, "Randomize");
-	generateL = new wxButton(this, (short)BUTTON_ID::BUT_GENERATEL_ID, "Generate labyrinth");
 	randGen->Add(randomize);
-	randGen->Add(generateL);
 	sbox1->Add(randGen, 0, wxEXPAND | wxLEFT);
 	//--------
 
@@ -83,9 +82,13 @@ LeftPanel::LeftPanel(wxFrame * frameParent, wxPanel * parent, RightPanel * right
 	//OPTIONS
 	wxStaticBoxSizer * options = new wxStaticBoxSizer(wxVERTICAL, this, "Options:");
 	diagonal = new wxCheckBox(this, (short)CHECKBOX_ID::CBOX_ALLOWDIAG, "Allow diagonal", wxDefaultPosition, wxSize(200, 20));
-	showFuncs = new wxCheckBox(this, (short)CHECKBOX_ID::CBOX_SHOWFUNCVAL, "Show function values", wxDefaultPosition, wxSize(200, 15));
+	showFuncs = new wxCheckBox(this, (short)CHECKBOX_ID::CBOX_SHOWFUNCVAL, "Show function values", wxDefaultPosition, wxSize(200, 20));
+	compareWithDijkstra = new wxCheckBox(this, (short)CHECKBOX_ID::CBOX_COMPAREWITHDIJKSTA, "Compare with Dijkstra", wxDefaultPosition, wxSize(200, 20));
+	compareWithBellmanFord = new wxCheckBox(this, (short)CHECKBOX_ID::CBOX_COMPAREWITHBELLMANFORD, "Compare with Bellman-Ford", wxDefaultPosition, wxSize(200, 20));
 	options->Add(diagonal);
 	options->Add(showFuncs);
+	options->Add(compareWithDijkstra);
+	options->Add(compareWithBellmanFord);
 	sbox1->Add(options);
 	//--------
 
@@ -149,16 +152,13 @@ void LeftPanel::onCreateGrid(wxCommandEvent & event)
 	onShowFuncValMarked(event);
 	onHeuristicChange(event);
 	onColorChange(event);
+	onCompareWithDijkstra(event);
+	onCompareWithBellmanFord(event);
 }
 
 void LeftPanel::onRandPushed(wxCommandEvent & event)
 {
 	m_rightPanel->randomize();
-}
-
-void LeftPanel::onGenPushed(wxCommandEvent & event)
-{
-	//generate labyrinth
 }
 
 void LeftPanel::onSearchPushed(wxCommandEvent & event)
@@ -225,4 +225,20 @@ void LeftPanel::onColorChange(wxCommandEvent & event)
 	default:
 		break;
 	}
+}
+
+void LeftPanel::onCompareWithDijkstra(wxCommandEvent & event)
+{
+	if (compareWithDijkstra->IsChecked())
+		m_rightPanel->setCompareWithDijkstra(true);
+	else
+		m_rightPanel->setCompareWithDijkstra(false);
+}
+
+void LeftPanel::onCompareWithBellmanFord(wxCommandEvent & event)
+{
+	if (compareWithBellmanFord->IsChecked())
+		m_rightPanel->setCompareWithBellmanFord(true);
+	else
+		m_rightPanel->setCompareWithBellmanFord(false);
 }

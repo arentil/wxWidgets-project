@@ -76,3 +76,13 @@ void RightPanel::allowDiagonal(bool allow)
 {
 	m_drawpanel->allowDiagonal(allow);
 }
+
+void RightPanel::setCompareWithDijkstra(bool ifCompare)
+{
+	m_drawpanel->setCompareWithDijkstra(ifCompare);
+}
+
+void RightPanel::setCompareWithBellmanFord(bool ifCompare)
+{
+	m_drawpanel->setCompareWithBellmanFord(ifCompare);
+}

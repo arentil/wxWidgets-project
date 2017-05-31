@@ -1,8 +1,7 @@
 #include "PriorityQueue.h"
 
-PriorityQueue::PriorityQueue()
+PriorityQueue::PriorityQueue(Compare compare) : m_compare(compare)
 {
-
 }
 
 void PriorityQueue::push(Square * x)
@@ -23,7 +22,22 @@ void PriorityQueue::pop()
 
 void PriorityQueue::sortQ()
 {
-	sort(p_queue.begin(), p_queue.end(), Compare());
+	switch (m_compare)
+	{
+	case Compare::ASTAR:
+		sort(p_queue.begin(), p_queue.end(), CompareForAStar());
+		break;
+
+	case Compare::DIJKSTRA:
+		sort(p_queue.begin(), p_queue.end(), CompareForDijkstra());
+		break;
+
+	default:
+		throw "INVALID COMPARE ID (PriorityQueue::sortQ())";
+		break;
+
+	}
+	
 }
 
 bool PriorityQueue::empty() const

@@ -17,7 +17,9 @@ enum class BUTTON_ID : short
 enum class CHECKBOX_ID : short
 {
 	CBOX_ALLOWDIAG = 200,
-	CBOX_SHOWFUNCVAL
+	CBOX_SHOWFUNCVAL,
+	CBOX_COMPAREWITHDIJKSTA,
+	CBOX_COMPAREWITHBELLMANFORD
 };
 
 class LeftPanel : public wxPanel
@@ -38,6 +40,8 @@ public:
 	void onShowFuncValMarked(wxCommandEvent & event);
 	void onHeuristicChange(wxCommandEvent & event);
 	void onColorChange(wxCommandEvent & event);
+	void onCompareWithDijkstra(wxCommandEvent & event);
+	void onCompareWithBellmanFord(wxCommandEvent & event);
 
 private:
 	wxFrame * m_frameParent;
@@ -61,7 +65,6 @@ private:
 
 	//RANDOMIZE AND GENERATE LABYRINTH
 	wxButton * randomize;
-	wxButton * generateL;
 	//------
 
 	//HEURISTIC
@@ -71,6 +74,8 @@ private:
 	//OPTIONS
 	wxCheckBox * diagonal;
 	wxCheckBox * showFuncs;
+	wxCheckBox * compareWithDijkstra;
+	wxCheckBox * compareWithBellmanFord;
 	//------
 
 	//A* BUTTONS

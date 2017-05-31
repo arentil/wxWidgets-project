@@ -24,4 +24,6 @@ public:
 	void clearPath();
 	void setHeuristic(Heuristic h);
 	void allowDiagonal(bool allow);
+	void setCompareWithDijkstra(bool ifCompare);
+	void setCompareWithBellmanFord(bool ifCompare);
 };

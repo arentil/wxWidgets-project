@@ -39,7 +39,8 @@ public:
 	int getG();
 	int getF();
 
-	friend class Compare;
+	friend class CompareForAStar;
+	friend class CompareForDijkstra;
 
 private:
 	Vector2D m_pos;		//x, y of top-left corner (for drawRectangle)
@@ -49,11 +50,20 @@ private:
 	int m_h, m_g, m_f;	// functions for A*
 };
 
-class Compare
+class CompareForAStar
 {
 public:
 	bool operator()(Square * node1, Square * node2)
 	{
 		return (node1->m_f > node2->m_f);
+	}
+};
+
+class CompareForDijkstra
+{
+public:
+	bool operator()(Square * node1, Square * node2)
+	{
+		return (node1->m_g > node2->m_g);
 	}
 };

@@ -17,6 +17,11 @@ DrawPanel::DrawPanel(wxFrame * frameParent, wxPanel * parent, wxWindowID winid, 
 	SetEvtHandlerEnabled(false);
 	m_frameParent = frameParent;
 	m_panelSize = sizer;
+	m_compareWithDijkstra = false;
+	m_compareWithBellmanFord = false;
+	timeOfAStar = 0.0;
+	timeOfDijkstra = 0.0;
+	timeOfBellmanFord = 0.0;
 }
 
 void DrawPanel::initialize(int width, int height, int size)
@@ -29,7 +34,11 @@ void DrawPanel::initialize(int width, int height, int size)
 	colorChange = true;
 	drawArea->paintNow();
 	SetEvtHandlerEnabled(true);
-
+	m_compareWithDijkstra = false;
+	m_compareWithBellmanFord = false;
+	timeOfAStar = 0.0;
+	timeOfDijkstra = 0.0;
+	timeOfBellmanFord = 0.0;
 }
 
 void DrawPanel::scale(float scale, int scaleVal)
@@ -66,10 +75,52 @@ void DrawPanel::randomize()
 		drawArea->randomize();
 }
 
-void DrawPanel::search()
+void DrawPanel::search()	//asdsad
 {
 	if (isInitialized)
-		drawArea->search();
+	{
+		
+		if (m_compareWithDijkstra || m_compareWithBellmanFord)
+		{
+			wxString result = "";
+			std::chrono::time_point<std::chrono::steady_clock> t_start;		//in nanoseconds
+			std::chrono::time_point<std::chrono::steady_clock> t_finish;	//in nanoseconds
+
+			if (m_compareWithDijkstra)
+			{
+				drawArea->clearPath();
+				t_start = std::chrono::high_resolution_clock::now();
+				drawArea->dijkstra();
+				t_finish = std::chrono::high_resolution_clock::now();
+				timeOfDijkstra = (t_finish - t_start).count();
+				result += "Dijkstra time: " + wxString::Format(wxT("%f"), float(timeOfDijkstra / 1000000)) + " miliseconds\n";
+			}
+			if (m_compareWithBellmanFord)
+			{
+				drawArea->clearPath();
+				t_start = std::chrono::high_resolution_clock::now();
+				drawArea->bellmanFord();
+				t_finish = std::chrono::high_resolution_clock::now();
+				timeOfBellmanFord = (t_finish - t_start).count();
+				result += "Bellman-Ford time: " + wxString::Format(wxT("%f"), float(timeOfBellmanFord / 1000000)) + " miliseconds\n";
+			}
+			drawArea->clearPath();
+			t_start = std::chrono::high_resolution_clock::now();
+			drawArea->search();
+			t_finish = std::chrono::high_resolution_clock::now();
+			timeOfAStar = (t_finish - t_start).count();
+			result += "A* time: " + wxString::Format(wxT("%f"), float(timeOfAStar / 1000000)) + " miliseconds";
+
+			wxMessageBox(result, "Search algorithms comparsion", wxICON_INFORMATION);
+		}
+		else
+		{
+			drawArea->clearPath();
+			drawArea->search();
+		}
+		drawArea->paintNow();
+		
+	}
 }
 
 void DrawPanel::clearWalls()
@@ -100,6 +151,18 @@ void DrawPanel::allowDiagonal(bool allow)
 {
 	if (isInitialized)
 		drawArea->allowDiagonal(allow);
+}
+
+void DrawPanel::setCompareWithDijkstra(bool ifCompare)
+{
+	if (isInitialized)
+		m_compareWithDijkstra = ifCompare;
+}
+
+void DrawPanel::setCompareWithBellmanFord(bool ifCompare)
+{
+	if (isInitialized)
+		m_compareWithBellmanFord = ifCompare;
 }
 
 void DrawPanel::MouseMotion(wxMouseEvent & event)

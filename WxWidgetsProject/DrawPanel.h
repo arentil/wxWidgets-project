@@ -2,6 +2,7 @@
 
 #include <wx/wx.h>
 #include "DrawArea.h"
+#include <chrono>
 
 class DrawPanel : public wxPanel
 {
@@ -21,6 +22,8 @@ public:
 	void clearPath();
 	void setHeuristic(Heuristic h);
 	void allowDiagonal(bool allow);
+	void setCompareWithDijkstra(bool ifCompare);
+	void setCompareWithBellmanFord(bool ifCompare);
 
 	void MouseMotion(wxMouseEvent & event);
 	void MouseLeftDown(wxMouseEvent & event);
@@ -37,6 +40,12 @@ private:
 	Color m_color;
 	bool colorChange;
 	bool isInitialized;
+
+	bool m_compareWithDijkstra;
+	bool m_compareWithBellmanFord;
+	float timeOfAStar;
+	float timeOfDijkstra;
+	float timeOfBellmanFord;
 
 	DECLARE_EVENT_TABLE()
 };

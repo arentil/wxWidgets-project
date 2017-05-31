@@ -4,10 +4,18 @@
 #include <vector>
 #include <algorithm>
 
+
+enum class Compare : short
+{
+	ASTAR = 0,
+	DIJKSTRA
+};
+
+
 class PriorityQueue
 {
 public:
-	PriorityQueue();
+	PriorityQueue(Compare compare);
 	void push(Square * x);
 	Square * top() const;
 	void pop();
@@ -16,4 +24,5 @@ public:
 
 private:
 	std::vector<Square *> p_queue;
+	Compare m_compare;
 };

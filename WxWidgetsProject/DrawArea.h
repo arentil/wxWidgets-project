@@ -35,7 +35,6 @@ public:
 
 	//GENERATING OBSTACLES
 	void randomize();
-	void genLabyrinth();	//TODO
 	//------
 
 	//A* METHODS
@@ -48,6 +47,11 @@ public:
 	bool unreachableCorner(Square * from, int n);		//check if corner is between two squares, if so, skip those
 	bool isUnreachable(Square * from, int n1, int n2);
 	//------
+
+	//DIJKSTRA AND BELLMAN-FORD
+	void dijkstra();
+	void bellmanFord();
+	//-------
 
 	//COMPUTING AREA/RENDERING
 	void scale(float scale, int scaleVal);

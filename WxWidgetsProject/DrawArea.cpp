@@ -220,7 +220,7 @@ void DrawArea::randomize()
 {
 	std::random_device rd;
 	std::mt19937 mt(rd());
-	std::uniform_int_distribution<int> dist1((m_width + m_height) * 0.1, m_width + m_height - (m_width + m_height) * 0.1);
+	std::uniform_int_distribution<int> dist1((m_width * m_height) * 0.01, (m_width * m_height) * 0.04);
 
 	std::vector<Square *> toRand;
 	for (int i = 0; i < m_width; i++)
@@ -270,6 +270,114 @@ int DrawArea::getHeuristic(Square * from, Square * to)
 	return h;
 }
 
+void DrawArea::dijkstra()
+{
+	if (start == nullptr || goal == nullptr)
+	{
+		return;
+	}
+
+	for (int i = 0; i < m_width; i++)	//initialize
+	{
+		for (int j = 0; j < m_height; j++)
+		{
+			m_area[i][j]->setG(INT_MAX);
+			m_area[i][j]->setParent(nullptr);
+		}
+	}
+
+	PriorityQueue queue(Compare::DIJKSTRA);
+	queue.push(start);
+	start->setG(0);
+
+	while (!queue.empty())
+	{
+		Square * best = queue.top();
+		queue.pop();
+
+		for (int i = 0; i < 8; i++)
+		{
+			Square * neighbor = getNeighbor(best, i);
+			if (neighbor == nullptr || neighbor->getColor() == Color::grey)
+				continue;
+			if (!m_allowDiagonal && (i % 2) || unreachableCorner(best, i))
+				continue;
+
+			if (neighbor->getG() > (best->getG() + ((i % 2 == 0) ? 10 : 14)))
+			{
+				neighbor->setG(best->getG() + ((i % 2 == 0) ? 10 : 14));
+				neighbor->setParent(best);
+				if (neighbor->getColor() == Color::red)
+					return;
+				queue.push(neighbor);
+			}
+		}
+	}
+}
+
+void DrawArea::bellmanFord()
+{
+	if (start == nullptr || goal == nullptr)
+	{
+		return;
+	}
+
+	for (int i = 0; i < m_width; i++)	//initialize
+	{
+		for (int j = 0; j < m_height; j++)
+		{
+			m_area[i][j]->setG(INT_MAX);
+			m_area[i][j]->setParent(nullptr);
+		}
+	}
+
+	start->setG(0);
+	for (int k = 0; k < 8; k++)	//for edges of current vertex
+	{
+		Square * neighbor = getNeighbor(start, k);
+		if (neighbor == nullptr || neighbor->getColor() == Color::grey)
+			continue;
+		if (!m_allowDiagonal && (k % 2) || unreachableCorner(start, k))
+			continue;
+
+		if (neighbor->getG() >(start->getG() + ((k % 2 == 0) ? 10 : 14)))
+		{
+			neighbor->setG(start->getG() + ((k % 2 == 0) ? 10 : 14));
+			neighbor->setParent(start);
+		}
+	}
+	bool flag = true;
+	
+	for (int l = 0; l < m_width * m_height; l++)
+	{
+		for (int i = 0; i < m_width; i++)
+		{
+			for (int j = 0; j < m_height; j++)
+			{
+				if (m_area[i][j]->getColor() == Color::green || m_area[i][j]->getParent() == nullptr)
+					continue;
+
+				for (int k = 0; k < 8; k++)	//for edges of current vertex
+				{
+					Square * neighbor = getNeighbor(m_area[i][j], k);
+					if (neighbor == nullptr || neighbor->getColor() == Color::grey)
+						continue;
+					if (!m_allowDiagonal && (k % 2) || unreachableCorner(m_area[i][j], k))
+						continue;
+
+					if (neighbor->getG() > (m_area[i][j]->getG() + ((k % 2 == 0) ? 10 : 14)))
+					{
+						neighbor->setG(m_area[i][j]->getG() + ((k % 2 == 0) ? 10 : 14));
+						neighbor->setParent(m_area[i][j]);
+						if (neighbor->getColor() == Color::red)
+							return;
+					}
+				}
+			}
+		}
+	}
+}
+
 void DrawArea::search()
 {
 	if (start == nullptr || goal == nullptr)
@@ -277,9 +385,8 @@ void DrawArea::search()
 		wxMessageBox(wxT("Set start and goal point first!"));
 		return;
 	}
-	clearPath();		//sprz¹tanie po ewentualnym poprzednim przejœciu
 
-	PriorityQueue open;	
+	PriorityQueue open(Compare::ASTAR);	
 	goal->isGoal = true;
 	start->onOpen = true;	//add to open set
 	start->onClosed = false;
@@ -298,7 +405,6 @@ void DrawArea::search()
 		if (best->isGoal)
 		{
 			finalPath(start, goal);
-			paintNow();
 			return;
 		}
 
