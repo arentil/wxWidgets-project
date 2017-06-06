@@ -402,6 +402,7 @@ void DrawArea::search()
 		best->onOpen = false;
 		best->onClosed = true;
 		best->setColor(Color::cyan);
+
 		if (best->isGoal)
 		{
 			finalPath(start, goal);
@@ -461,7 +462,7 @@ Square * DrawArea::getNeighbor(Square * from, int n)
 	int x = x_res.quot;
 	int y = y_res.quot;
 	Square * temp = nullptr;
-
+	
 	switch (n)
 	{
 	case 0:
@@ -469,23 +470,23 @@ Square * DrawArea::getNeighbor(Square * from, int n)
 			temp = m_area[x - 1][y];
 		break;
 	case 1:
-		if (x - 1 >= 0 && y + 1 < m_width)
+		if (x - 1 >= 0 && y + 1 < m_height)
 			temp = m_area[x - 1][y + 1];
 		break;
 	case 2:
-		if (y + 1 < m_width)
+		if (y + 1 < m_height)
 			temp = m_area[x][y + 1];
 		break;
 	case 3:
-		if (x + 1 < m_height && y + 1 < m_width)
+		if (x + 1 < m_width && y + 1 < m_height)
 			temp = m_area[x + 1][y + 1];
 		break;
 	case 4:
-		if (x + 1 < m_height)
+		if (x + 1 < m_width)
 			temp = m_area[x + 1][y];
 		break;
 	case 5:
-		if (x + 1 < m_height && y - 1 >= 0)
+		if (x + 1 < m_width && y - 1 >= 0)
 			temp = m_area[x + 1][y - 1];
 		break;
 	case 6:
