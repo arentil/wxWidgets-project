@@ -116,7 +116,7 @@ MainFrame.cpp(35): warning C4305: 'argument': truncation from 'double' to 'float
   StatusBar.cpp
   Vector2D.cpp
   Generating code
-  All 1217 functions were compiled because no usable IPDB/IOBJ from previous compilation was found.
+  All 1218 functions were compiled because no usable IPDB/IOBJ from previous compilation was found.
   Finished generating code
   WxWidgetsProject.vcxproj -> D:\Moje pliki\programowanie\wxWidgets\WxWidgets project\wxWidgets-project\Release\WxWidgetsProject.exe
   WxWidgetsProject.vcxproj -> D:\Moje pliki\programowanie\wxWidgets\WxWidgets project\wxWidgets-project\Release\WxWidgetsProject.pdb (Full PDB)

@@ -75,7 +75,8 @@ LeftPanel::LeftPanel(wxFrame * frameParent, wxPanel * parent, RightPanel * right
 	wxArrayString h_array;
 	h_array.Add(wxT("Manhattan"));
 	h_array.Add(wxT("Diagonal"));
-	heuristic = new wxRadioBox(this, 250, "Heuristic:", wxDefaultPosition, wxSize(200, 55), h_array, 1, wxRA_SPECIFY_ROWS);
+	h_array.Add(wxT("Euclidean"));
+	heuristic = new wxRadioBox(this, 250, "Heuristic:", wxDefaultPosition, wxSize(200, 100), h_array, 1, wxRA_SPECIFY_COLS);
 	sbox1->Add(heuristic);
 	//--------
 
@@ -203,6 +204,9 @@ void LeftPanel::onHeuristicChange(wxCommandEvent & event)
 		break;
 	case 1:
 		m_rightPanel->setHeuristic(Heuristic::DIAGONAL);
+		break;
+	case 2:
+		m_rightPanel->setHeuristic(Heuristic::EUCLIDEAN);
 		break;
 	default:
 		break;

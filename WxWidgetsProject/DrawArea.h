@@ -16,7 +16,8 @@
 enum class Heuristic : short
 {
 	MANHATTAN = 0,
-	DIAGONAL
+	DIAGONAL,
+	EUCLIDEAN
 };
 
 class DrawArea

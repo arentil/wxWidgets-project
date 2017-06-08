@@ -250,18 +250,21 @@ int DrawArea::getHeuristic(Square * from, Square * to)
 	fy_res = div((from->getPos()[1] + 1 - y_min), m_size);
 	tx_res = div((to->getPos()[0] + 1 - x_min), m_size);
 	ty_res = div((to->getPos()[1] + 1 - y_min), m_size);
-	int xd = abs(fx_res.quot - tx_res.quot);
-	int yd = abs(fy_res.quot - ty_res.quot);
+	int dx = abs(fx_res.quot - tx_res.quot);
+	int dy = abs(fy_res.quot - ty_res.quot);
 	switch (m_heuristic)
 	{
 	case Heuristic::MANHATTAN:
-		h = (10 * (xd + yd));
+		h = (10 * (dx + dy));
 		break;
 	case Heuristic::DIAGONAL:
-		if (xd > yd)
-			h = ((14 * yd) + (10 * (xd - yd)));
+		if (dx > dy)
+			h = ((14 * dy) + (10 * (dx - dy)));
 		else
-			h = ((14 * xd) + (10 * (yd - xd)));
+			h = ((14 * dx) + (10 * (dy - dx)));
+		break;
+	case Heuristic::EUCLIDEAN:
+		h = 10 * sqrt((dx * dx) + (dy * dy));
 		break;
 	default:
 		break;
